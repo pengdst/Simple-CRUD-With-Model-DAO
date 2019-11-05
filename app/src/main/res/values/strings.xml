@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Simple CRUD with Model DAO</string>
+
+    <string name="delete">DELETE</string>
+    <string name="hari">Hari</string>
+    <string name="matkul">Matkul</string>
+    <string name="jam">Jam</string>
+    <string name="ruang">Ruang</string>
+    <string name="dosen">Dosen</string>
 </resources>
