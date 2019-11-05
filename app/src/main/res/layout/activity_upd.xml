@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UpdActivity">
+
+    <EditText
+        android:id="@+id/etHari"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/hari"/>
+
+    <EditText
+        android:id="@+id/etMatkul"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/matkul"/>
+
+    <EditText
+        android:id="@+id/etJam"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/jam"/>
+
+    <EditText
+        android:id="@+id/etRuang"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/ruang"/>
+
+    <EditText
+        android:id="@+id/etDosen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/dosen"/>
+
+    <Button
+        android:id="@+id/btnSubmit"
+        android:text="@string/submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>
