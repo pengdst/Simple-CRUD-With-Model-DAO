@@ -4,10 +4,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,15 +17,18 @@ import android.widget.Toast;
 
 import com.example.simplecrudwithmodeldao.adapter.JadwalAdapter;
 import com.example.simplecrudwithmodeldao.dao.JadwalDAO;
+import com.example.simplecrudwithmodeldao.helper.JadwalItemTouchHelper;
+import com.example.simplecrudwithmodeldao.helper.JadwalItemTouchHelperListener;
 import com.example.simplecrudwithmodeldao.helper.OnItemClickCallback;
 import com.example.simplecrudwithmodeldao.model.Jadwal;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements OnItemClickCallback {
+public class MainActivity extends AppCompatActivity implements OnItemClickCallback, JadwalItemTouchHelperListener {
     RecyclerView rvJadwal;
     FloatingActionButton fabAdd;
     Toolbar toolbar;
@@ -46,6 +51,9 @@ public class MainActivity extends AppCompatActivity implements OnItemClickCallba
 
         rvJadwal.setAdapter(adapter);
         rvJadwal.setLayoutManager(new LinearLayoutManager(this));
+
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new JadwalItemTouchHelper(0, ItemTouchHelper.LEFT, this);
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(rvJadwal);
 
         initListener();
     }
@@ -114,6 +122,31 @@ public class MainActivity extends AppCompatActivity implements OnItemClickCallba
 
         } catch (Exception e) {
             Log.e("error", Objects.requireNonNull(e.getMessage()));
+        }
+    }
+
+    @Override
+    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
+        if (viewHolder instanceof JadwalAdapter.ViewHolder) {
+            final Jadwal bckUpJadwal = dao.select(position);
+            String matkul = bckUpJadwal.getMatkul();
+            final int deletedIndex = position;
+
+            dao.delete(deletedIndex);
+            adapter.notifyItemRemoved(deletedIndex);
+
+            Snackbar snackbar = Snackbar
+                    .make(coordinatorLayout, " Undo delete for item "+matkul+ " ?", Snackbar.LENGTH_LONG);
+            snackbar.setAction("UNDO", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    dao.insert(deletedIndex, bckUpJadwal);
+                    adapter.notifyItemInserted(deletedIndex);
+                }
+            });
+            snackbar.setActionTextColor(Color.YELLOW);
+            snackbar.show();
         }
     }
 }
