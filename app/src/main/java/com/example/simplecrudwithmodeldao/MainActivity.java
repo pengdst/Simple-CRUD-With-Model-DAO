@@ -1,5 +1,6 @@
 package com.example.simplecrudwithmodeldao;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -8,7 +9,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.simplecrudwithmodeldao.adapter.JadwalAdapter;
 import com.example.simplecrudwithmodeldao.dao.JadwalDAO;
@@ -18,6 +21,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements OnItemClickCallback {
     RecyclerView rvJadwal;
@@ -75,5 +79,41 @@ public class MainActivity extends AppCompatActivity implements OnItemClickCallba
         intent.putExtra("Ruang", jadwal.getRuang());
         intent.putExtra("Dosen", jadwal.getDosen());
         startActivityForResult(intent, 80);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        try {
+            String matkul = data.getStringExtra("Matkul");
+            String jam = data.getStringExtra("Jam");
+            String ruang = data.getStringExtra("Ruang");
+            String dosen = data.getStringExtra("Dosen");
+            String hari = data.getStringExtra("Hari");
+
+            Jadwal jadwal = new Jadwal();
+            jadwal.setHari(hari);
+            jadwal.setMatkul(matkul);
+            jadwal.setJam(jam);
+            jadwal.setRuang(ruang);
+            jadwal.setDosen(dosen);
+
+
+            if (requestCode == 80 && resultCode == RESULT_OK){
+
+                Toast.makeText(getApplicationContext(), " = "+data.getStringExtra("Hari"), Toast.LENGTH_LONG).show();
+
+                dao.update(itemID, jadwal);
+                adapter.notifyDataSetChanged();
+            }
+            else if (requestCode == 81 && resultCode == RESULT_OK){
+                dao.insert(jadwal);
+                adapter.notifyDataSetChanged();
+            }
+
+        } catch (Exception e) {
+            Log.e("error", Objects.requireNonNull(e.getMessage()));
+        }
     }
 }
